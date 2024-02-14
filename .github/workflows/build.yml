@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies and package Lambda function
         run: |
           npm install
-          zip -r lambda.zip . -x '*.git*' -x 'node_modules/*'
+          zip -r lambda.zip . -x '*.git*'
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
