@@ -178,7 +178,7 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
 
 async function request_backfill(garmin_oauth_token, garmin_token_secret) {
     // Determine the current date
-    const current_date = new Date('June 1, 2022 00:00:00');
+    const current_date = new Date('November 1, 2022 00:00:00');
 
     // Generate timestamps for the last three months in 2-week intervals
     const intervals = generate_intervals(current_date);
@@ -187,7 +187,7 @@ async function request_backfill(garmin_oauth_token, garmin_token_secret) {
         const { start_time, end_time } = interval;
 
         const request_data = {
-            url: 'https://apis.garmin.com/wellness-api/rest/backfill/activities',
+            url: 'https://apis.garmin.com/wellness-api/rest/backfill/activityDetails',
             method: 'GET',
             data: {
                 summaryStartTimeInSeconds: start_time,
