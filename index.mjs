@@ -87,6 +87,7 @@ export async function handler(event) {
         console.log('Garmin User ID:', garmin_user_id);
 
         await update_dynamo_db(user_id, response_oauth_token, response_oauth_token_secret, garmin_user_id);
+        await request_backfill(response_oauth_token, response_oauth_token_secret);
 
         return {
             statusCode: 200,
@@ -172,5 +173,68 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
     } catch (error) {
         console.error('Error updating tables:', error);
         throw error;
+    }
+
+    async function request_backfill(garmin_oauth_token, garmin_token_secret) {
+        // Determine the current date
+        const current_date = new Date();
+    
+        // Generate timestamps for the last three months in 2-week intervals
+        const intervals = generate_intervals(current_date);
+    
+        for (const interval of intervals) {
+            const { start_time, end_time } = interval;
+    
+            const request_data = {
+                url: 'https://apis.garmin.com/wellness-api/rest/backfill/activities',
+                method: 'GET',
+                data: {
+                    summaryStartTimeInSeconds: start_time,
+                    summaryEndTimeInSeconds: end_time
+                }
+            };
+    
+            const token = {
+                key: garmin_oauth_token,
+                secret: garmin_token_secret
+            };
+    
+            // Authorize and sign the request
+            const authorization = oauth.authorize(request_data, token);
+    
+            try {
+                // Make the request
+                const response = await request({
+                    url: request_data.url + `?summaryStartTimeInSeconds=${start_time}&summaryEndTimeInSeconds=${end_time}`,
+                    method: request_data.method,
+                    headers: {
+                        'Authorization': oauth.toHeader(authorization).Authorization
+                    }
+                });
+    
+                console.log('Backfill request response:', response);
+    
+                // We don't need to do anything with the response since the backfill process is asynchronous
+            } catch (error) {
+                console.error('Failed to request backfill:', error);
+                throw error;
+            }
+        }
+    }
+    
+    function generate_intervals(current_date) {
+        const intervals = [];
+        const two_weeks_in_seconds = 2 * 7 * 24 * 60 * 60;
+        let end_time = Math.floor(current_date.getTime() / 1000); // Current time in seconds
+        let start_time = end_time - two_weeks_in_seconds; // one weeks ago in seconds
+    
+        // Generate intervals for the last three months
+        for (let i = 0; i < 8; i++) { // 3 months / 2 weeks = 6 intervals + 2 extra weeks + 8 intervals
+            intervals.push({ start_time, end_time });
+            end_time = start_time; // Set the end of the next interval to the start of the current one
+            start_time -= two_weeks_in_seconds; // Move the start back another two weeks
+        }
+    
+        return intervals;
     }
 }
