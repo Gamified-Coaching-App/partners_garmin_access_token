@@ -178,7 +178,7 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
 
 async function request_backfill(garmin_oauth_token, garmin_token_secret) {
     // Determine the current date
-    const current_date = new Date('March 1, 2023 00:00:00');
+    const current_date = new Date('June 1, 2022 00:00:00');
 
     // Generate timestamps for the last three months in 2-week intervals
     const intervals = generate_intervals(current_date);
@@ -213,7 +213,7 @@ async function request_backfill(garmin_oauth_token, garmin_token_secret) {
                 }
             });
 
-            console.log('Backfill request response:', response);
+            console.log('Backfill request response:', response.statusCode, response);
 
             // We don't need to do anything with the response since the backfill process is asynchronous
         } catch (error) {
