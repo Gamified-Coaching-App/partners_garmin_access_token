@@ -178,7 +178,7 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
 
 async function request_backfill(garmin_oauth_token, garmin_token_secret) {
     // Determine the current date
-    const current_date = new Date();
+    const current_date = new Date('March 1, 2023 00:00:00');
 
     // Generate timestamps for the last three months in 2-week intervals
     const intervals = generate_intervals(current_date);
