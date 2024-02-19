@@ -225,15 +225,15 @@ async function request_backfill(garmin_oauth_token, garmin_token_secret) {
 
 function generate_intervals(current_date) {
     const intervals = [];
-    const two_weeks_in_seconds = 2 * 7 * 24 * 60 * 60;
+    const four_weeks_in_seconds = 4 * 7 * 24 * 60 * 60;
     let end_time = Math.floor(current_date.getTime() / 1000); // Current time in seconds
-    let start_time = end_time - two_weeks_in_seconds; // one weeks ago in seconds
+    let start_time = end_time - four_weeks_in_seconds; // one weeks ago in seconds
 
     // Generate intervals for the last three months
-    for (let i = 0; i < 8; i++) { // 3 months / 2 weeks = 6 intervals + 2 extra weeks + 8 intervals
+    for (let i = 0; i < 3; i++) { // 3 months / 2 weeks = 6 intervals + 2 extra weeks + 8 intervals
         intervals.push({ start_time, end_time });
         end_time = start_time; // Set the end of the next interval to the start of the current one
-        start_time -= two_weeks_in_seconds; // Move the start back another two weeks
+        start_time -= four_weeks_in_seconds; // Move the start back another two weeks
     }
 
     return intervals;
