@@ -25,7 +25,7 @@ export async function handler(event) {
     console.log("Received event:", event);
 
     // Assuming event is directly passed as an object with oauth_verifier and oauth_token at the top level
-    const { oauth_verifier, oauth_token } = event;
+    const { oauth_verifier, oauth_token } = event.body;
     console.log('Received oauth_verifier:', oauth_verifier);
     console.log('Received oauth_token:', oauth_token);
 
