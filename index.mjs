@@ -178,7 +178,7 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
 
 async function request_backfill(garmin_oauth_token, garmin_token_secret) {
     // Determine the current date
-    const current_date = new Date('November 1, 2022 00:00:00');
+    const current_date = new Date('August 1, 2022 00:00:00');
 
     // Generate timestamps for the last three months in 2-week intervals
     const intervals = generate_intervals(current_date);
@@ -228,8 +228,8 @@ function generate_intervals(current_date) {
     const two_days_in_seconds = 2 * 24 * 60 * 60; // Two days in seconds
     let end_time = Math.floor(current_date.getTime() / 1000); // Current time in seconds
 
-    // Generate intervals for 45 periods of 2 days each
-    for (let i = 0; i < 45; i++) {
+    // Generate intervals for 45 periods of 2 days each. We add 2 days (= 47)to make sure we have full 3 months of data
+    for (let i = 0; i < 47; i++) {
         // Calculate start time for 2 days ago from the end time
         let start_time = end_time - two_days_in_seconds;
         
