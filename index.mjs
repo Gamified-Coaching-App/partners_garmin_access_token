@@ -23,7 +23,7 @@ const oauth = OAuth({
 
 export async function handler(event) {
     // Assuming event is directly passed as an object with oauth_verifier and oauth_token at the top level
-    const { oauth_verifier, oauth_token } = JSON.parse(event.body-json);
+    const { oauth_verifier, oauth_token } = JSON.parse(event[body-json]);
     console.log('Received oauth_verifier:', oauth_verifier);
     console.log('Received oauth_token:', oauth_token);
 
