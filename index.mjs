@@ -22,15 +22,13 @@ const oauth = OAuth({
 });
 
 export async function handler(event) {
-    console.log("Received event body:", event.body);
-
     // Assuming event is directly passed as an object with oauth_verifier and oauth_token at the top level
-    const { oauth_verifier, oauth_token } = JSON.parse(event.body);
+    const { oauth_verifier, oauth_token } = JSON.parse(event.body-json);
     console.log('Received oauth_verifier:', oauth_verifier);
     console.log('Received oauth_token:', oauth_token);
 
     // Adjusting for case-sensitivity and direct access in event.headers
-    const jwt_token = event.headers.Authorization || event.headers.authorization;
+    const jwt_token = event.params.header.Authorization;
     const decoded_jwt = jwt.decode(jwt_token);
     const user_id = decoded_jwt.sub;
     console.log("Decoded JWT user ID:", user_id);
