@@ -92,22 +92,12 @@ export async function handler(event) {
         return {
             statusCode: 200,
             body: JSON.stringify({}),
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                "Access-Control-Allow-Methods": "OPTIONS,POST"
-            }
         };
     } catch (error) {
         console.error('Error:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: 'Failed to retrieve tokens or user ID', error: error.message }),
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                "Access-Control-Allow-Methods": "OPTIONS,POST"
-            }
         };
     }
 }
