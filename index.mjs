@@ -167,11 +167,8 @@ async function update_dynamo_db(user_id, garmin_oauth_token, garmin_token_secret
 }
 
 async function request_backfill(garmin_oauth_token, garmin_token_secret) {
-    // Determine the current date
-    const current_date = new Date();
-
-    // Generate timestamps for the last three months in 2-week intervals
-    const intervals = generate_intervals(current_date);
+    // Generate intervals for the last 13 weeks in 7-day intervals
+    const intervals = generate_intervals(new Date());
 
     for (const interval of intervals) {
         const { start_time, end_time } = interval;
@@ -203,9 +200,10 @@ async function request_backfill(garmin_oauth_token, garmin_token_secret) {
                 }
             });
 
-            console.log('Backfill request response:', response.statusCode, response);
+            console.log('Backfill request response:', response);
 
-            // We don't need to do anything with the response since the backfill process is asynchronous
+            // The actual handling of the response will depend on your specific needs and the API's behavior.
+            // This example logs the response for demonstration purposes.
         } catch (error) {
             console.error('Failed to request backfill:', error);
             throw error;
@@ -215,13 +213,13 @@ async function request_backfill(garmin_oauth_token, garmin_token_secret) {
 
 function generate_intervals(current_date) {
     const intervals = [];
-    const two_days_in_seconds = 2 * 24 * 60 * 60; // Two days in seconds
+    const seven_days_in_seconds = 7 * 24 * 60 * 60; // Seven days in seconds
     let end_time = Math.floor(current_date.getTime() / 1000); // Current time in seconds
 
-    // Generate intervals for 45 periods of 2 days each. We add 2 days (= 47)to make sure we have full 3 months of data
-    for (let i = 0; i < 47; i++) {
-        // Calculate start time for 2 days ago from the end time
-        let start_time = end_time - two_days_in_seconds;
+    // Generate intervals for 13 periods of 7 days each
+    for (let i = 0; i < 13; i++) {
+        // Calculate start time for 7 days ago from the end time
+        let start_time = end_time - seven_days_in_seconds;
         
         // Add the interval to the intervals array
         intervals.push({ start_time, end_time });
