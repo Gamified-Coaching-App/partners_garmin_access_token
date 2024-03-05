@@ -6,9 +6,29 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
-  deploy:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      node-version: '20'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check working directory
+        run: |
+          echo "Current working directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+  test:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,11 +36,39 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20' 
+          node-version: '20'
 
-      - name: Install dependencies and package Lambda function
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  package_deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Check working directory
         run: |
-          npm install
+          echo "Current working directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+      
+      - name: Package Lambda function
+        run: 
           zip -r lambda.zip . -x '*.git*'
 
       - name: Configure AWS credentials
